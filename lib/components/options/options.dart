@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:general_mod_manager/models/mod_info_model.dart';
+import 'package:general_mod_manager/models/mod_paths_model.dart';
 import 'package:general_mod_manager/services/directory_handler.dart';
-import 'package:general_mod_manager/services/modsProcess/mod_info_process.dart';
+import 'package:general_mod_manager/services/game_configurator.dart';
+import 'package:general_mod_manager/services/script_handler.dart';
+
 import 'package:general_mod_manager/services/url_launch.dart';
 import 'package:general_mod_manager/utils/useful_functions.dart';
 import 'package:general_mod_manager/utils/variables.dart';
@@ -20,7 +25,9 @@ class _OptionListState extends State<OptionList> {
   OptionDialog optionDialog = OptionDialog();
   UrlLaunch urlLaunch = UrlLaunch();
   Directories directories = Directories();
-  ModInfo modsInfo = ModInfo();
+  ModPaths modsInfo = ModPaths();
+  Scripts scripts = Scripts();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -63,7 +70,24 @@ class _OptionListState extends State<OptionList> {
               print(checkFile(
                   "${directories.getScriptFilesPath().path}\\installMod.exe"));
               print(checkFile(
-                  "${directories.getScriptFilesPath().path}\\removeMod.exe"));
+                  "${directories.getScriptFilesPath().path}\\uninstallMod.exe"));
+              print(checkFile(
+                  "${directories.getScriptFilesPath().path}\\setConfiguration.exe"));
+            },
+          ),
+          OptionTile(
+            title: "Run Configuration",
+            onTap: () {
+              GameConfigurator configurator = GameConfigurator(
+                gameLocalAppPath: r"\Larian Studios\Baldur's Gate 3\Mods",
+                gameDataPath: r"",
+                gameBinPath: r"",
+                gameExePath: r"",
+                scriptExtenderPath: r"",
+              );
+
+              // Configure the game
+              configurator.configureGame();
             },
           ),
         ],
