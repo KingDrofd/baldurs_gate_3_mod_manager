@@ -14,6 +14,10 @@ class UrlLaunch {
     openLink("https://www.nexusmods.com/baldursgate3/");
   }
 
+  void openModFixer() {
+    openLink("https://www.nexusmods.com/baldursgate3/mods/141?tab=files");
+  }
+
   void openNativeMod() {
     openLink("https://www.nexusmods.com/baldursgate3/mods/944");
   }
