@@ -42,14 +42,15 @@ class Directories {
     return Directory.systemTemp.createTempSync('bg3 manager temp');
   }
 
-  void openModsDir() async {
+  Future<void> openModsDir() async {
     if (!Platform.isWindows) return;
-    print(checkDir(modsDirectory));
-    if (!checkDir(modsDirectory)) return;
-    Directory(modsDirectory).createSync();
-    File('$modsDirectory\\Copy Zipped Mods In This Folder').createSync();
+    print(checkDir(getModFilesPath().path));
+    if (!checkDir(getModFilesPath().path)) return;
+    Directory(getModFilesPath().path).createSync();
+    File('${getModFilesPath().path}\\Copy Zipped Mods In This Folder')
+        .createSync();
 
-    await Process.run('explorer', [modsDirectory]);
+    await Process.run('explorer', [getModFilesPath().path]);
   }
 
   void openGameDir() async {
