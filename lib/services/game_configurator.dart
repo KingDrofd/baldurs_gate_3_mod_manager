@@ -33,10 +33,8 @@ class GameConfigurator {
     String gameConfigPath = '$dataDirectory\\game_config.json';
 
     Map<String, String> config = {
-      'game localappdata path':
-          p.join(directories.getModInstallPath().path, gameLocalAppPath),
-      'game mod settings path':
-          p.join(directories.getModInstallPath().path, gameModSettingsPath),
+      'game localappdata path': gameLocalAppPath,
+      'game mod settings path': gameModSettingsPath,
       'game data path': gameDataPath,
       'game bin path': gameBinPath,
       'game exe path': gameExePath,

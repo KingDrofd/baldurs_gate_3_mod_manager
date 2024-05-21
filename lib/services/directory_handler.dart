@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:general_mod_manager/services/log_provider.dart';
 import 'package:general_mod_manager/utils/dir_paths.dart';
 import 'package:path/path.dart' as p;
+import 'package:provider/provider.dart';
 import '../utils/useful_functions.dart';
 
 class Directories {
@@ -15,18 +17,28 @@ class Directories {
   Directory getScriptFilesPath() {
     Directory scriptsDirectory = Directory(
         "${getInstallationDirectory()}\\data\\flutter_assets\\scripts");
+    if (!scriptsDirectory.existsSync()) {
+      File('${scriptsDirectory.path}\\Copy Zipped Mods In This Folder')
+          .createSync();
+    }
     return scriptsDirectory;
   }
 
   Directory getDataFilesPath() {
     Directory scriptsDirectory =
         Directory("${getInstallationDirectory()}\\data\\data");
+    if (!scriptsDirectory.existsSync()) {
+      Directory(scriptsDirectory.path).createSync();
+    }
     return scriptsDirectory;
   }
 
   Directory getModFilesPath() {
     Directory scriptsDirectory =
         Directory("${getInstallationDirectory()}\\mods");
+    if (!scriptsDirectory.existsSync()) {
+      Directory(scriptsDirectory.path).createSync();
+    }
     return scriptsDirectory;
   }
 
@@ -53,9 +65,9 @@ class Directories {
     await Process.run('explorer', [getModFilesPath().path]);
   }
 
-  void openGameDir() async {
+  void openDir(dir) async {
     if (Platform.isWindows) {
-      await Process.run('explorer', [gameDirectory]);
+      await Process.run('explorer', [dir]);
     }
   }
 }
