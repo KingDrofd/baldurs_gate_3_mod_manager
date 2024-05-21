@@ -44,6 +44,10 @@ dependencies:
   xml: ^6.5.0
   tuple: ^2.0.2
   provider: ^6.1.2
+  flutter_launcher_icons: ^0.13.1
+  bitsdojo_window: ^0.1.6
+  flutter_svg: ^2.0.10+1
+  restart_app: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +60,11 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
 
+flutter_launcher_icons:
+  windows:
+    generate: true
+    image_path: "assets/icons/UncookedModsIcon.png"
+    icon_size: 256
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -68,7 +77,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
+    - assets/icons/UncookedMods.svg
     - scripts/
   #   - images/a_dot_ham.jpeg
 
