@@ -1,17 +1,18 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:general_mod_manager/services/directory_handler.dart';
 import 'package:general_mod_manager/services/url_launch.dart';
 import 'package:general_mod_manager/utils/variables.dart';
 import 'package:general_mod_manager/widgets/options/option_tile.dart';
 
 class OptionDialog {
+  bool isDialogShowing = false;
   Directories directories = Directories();
   UrlLaunch urlLaunch = UrlLaunch();
-  updateDialog(BuildContext context) async {
-    _showUpdateManager(context);
-    await Future.delayed(Duration(seconds: 2));
-    Navigator.of(context).pop();
-    return showDialog(
+
+  Future<void> updateDialog(BuildContext context) async {
+    await showDialog(
       context: context,
       builder: (context) {
         return Dialog(
@@ -32,29 +33,50 @@ class OptionDialog {
     );
   }
 
-  void _showUpdateManager(BuildContext context) async {
-    showDialog(
+  Future<void> showUpdateManager(BuildContext context, String? title) async {
+    if (isDialogShowing) return;
+    isDialogShowing = true;
+
+    await showDialog(
       context: context,
-      builder: (BuildContext builder) {
-        return Dialog(
-          backgroundColor: backgroundColor,
-          child: SizedBox(
-            width: double.minPositive,
-            height: 200,
-            child: Center(
-              child: CircularProgressIndicator(),
+      builder: (context) {
+        return PopScope(
+          canPop: true,
+          onPopInvoked: (didPop) async {
+            isDialogShowing = false;
+          },
+          child: Dialog(
+            backgroundColor: backgroundColor,
+            child: SizedBox(
+              width: double.minPositive,
+              height: 200,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title!,
+                      style: style3,
+                    ),
+                    Gap(20),
+                    const CircularProgressIndicator(),
+                  ],
+                ),
+              ),
             ),
           ),
         );
       },
-    );
+    ).then((_) {
+      isDialogShowing = false;
+    });
   }
 
   void instructionDialog(
       BuildContext context, Function onTap, Function refresh) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: Text(
             "How to use the mod manager",
@@ -68,7 +90,7 @@ class OptionDialog {
               children: [
                 ListTile(
                   title: Text(
-                    "First run the configuration button Or ",
+                    "First run the configuration button or ",
                     style: style3,
                   ),
                 ),
@@ -83,8 +105,9 @@ class OptionDialog {
                 ListTile(
                   title: Text(
                     "This will create a folder for mods "
-                    "and other data neccessary for the app"
-                    " to work.",
+                    "and other data necessary for the app"
+                    " to work. (If you create a custom config, "
+                    "just input the path to the exe without adding \\bg3.exe)",
                     style: style3,
                   ),
                 ),
@@ -98,9 +121,12 @@ class OptionDialog {
                   title: OptionTile(
                     title: "Open Mod Folder",
                     onTap: () async {
-                      _showUpdateManager(context);
+                      showUpdateManager(context, "Opening Mods Folder");
                       await directories.openModsDir();
-                      Navigator.of(context).pop();
+                      if (!context.mounted) return;
+                      if (isDialogShowing) {
+                        Navigator.of(context).pop();
+                      }
                     },
                   ),
                 ),
@@ -132,7 +158,7 @@ class OptionDialog {
                 ),
                 ListTile(
                   title: Text(
-                    "In case you were wondering how the loading of mod orders work,"
+                    "In case you were wondering how the loading of mod orders works,"
                     "it is based on the order you enable the mods.",
                     style: style3,
                   ),
