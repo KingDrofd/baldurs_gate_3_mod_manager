@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:general_mod_manager/services/game_mod_manager/game_mod_manager.dart';
 import 'package:general_mod_manager/services/log_provider.dart';
+import 'package:general_mod_manager/widgets/options/option_dialog.dart';
 import 'package:path/path.dart' as path;
 import 'package:xml/xml.dart';
 import 'package:general_mod_manager/services/directory_handler.dart';
@@ -29,7 +31,7 @@ class ModTileController {
   }
 
   Future<void> handleModToggle(
-      bool value, Map<String, dynamic> modData, bool orderMode) async {
+      bool value, Map<String, dynamic> modData, bool orderMode, context) async {
     Map<String, String> modSettingsPath = await loadConfig();
     ModifyModsetting modifyModsetting = ModifyModsetting();
     final modSettingsFile = File(path.join(
@@ -37,6 +39,8 @@ class ModTileController {
     final document = XmlDocument.parse(modSettingsFile.readAsStringSync());
 
     if (value == true) {
+      OptionDialog optionDialog = OptionDialog();
+      optionDialog.showUpdateManager(context, "Installing Mod");
       String? modFolder = await manager.extractMod(modData['ArchiveName']);
       if (modFolder != null) {
         List<String> extractedPaths = [];
@@ -63,10 +67,22 @@ class ModTileController {
           );
         }
       }
+
+      if (!context.mounted) return;
+      if (optionDialog.isDialogShowing) {
+        Navigator.of(context).pop();
+      }
     } else {
+      OptionDialog optionDialog = OptionDialog();
+      optionDialog.showUpdateManager(context, "Uninstalling Mod");
       await manager.deleteFilesFromJson(modData['ArchiveName']);
       modifyModsetting.removeMod(
           document, modData['Mods'][0]['UUID'], orderMode);
+
+      if (!context.mounted) return;
+      if (optionDialog.isDialogShowing) {
+        Navigator.of(context).pop();
+      }
     }
 
     modifyModsetting.saveDocument(
